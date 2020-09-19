@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wctc.distjavazodiac.entity.Birthday;
 import edu.wctc.distjavazodiac.entity.Fortune;
 import edu.wctc.distjavazodiac.entity.Horoscope;
+import edu.wctc.distjavazodiac.repo.HoroscopeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,12 +24,18 @@ public class RandomHoroscopeService implements HoroscopeService {
     private ZodiacService zodiacService;
 
     @Autowired
+    public HoroscopeRepository horoscopeRepository;
+
+    @Autowired
     public RandomHoroscopeService(ZodiacService zodiacService) {
         this.zodiacService = zodiacService;
     }
 
     @Override
     public Horoscope getHoroscope(Birthday birthday) {
+        allFortunes = new ArrayList<>();
+        horoscopeRepository.findAll().forEach(allFortunes::add);
+
         String sign;
         if (birthday.getZodiacType().toLowerCase().startsWith("w")) {
             sign = zodiacService.getWesternZodiacSign(birthday);
